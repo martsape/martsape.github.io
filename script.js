@@ -28,14 +28,19 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Navbar background on scroll
+// Navbar background on scroll — theme-aware (uses CSS variable)
 window.addEventListener('scroll', () => {
     const navbar = document.getElementById('navbar');
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const navBg = isDark ? 'rgba(13,17,23,0.98)' : 'rgba(255,255,255,0.98)';
+    const navBgLight = isDark ? 'rgba(13,17,23,0.95)' : 'rgba(255,255,255,0.95)';
     if (window.scrollY > 50) {
-        navbar.style.background = 'rgba(255, 255, 255, 0.98)';
-        navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+        navbar.style.background = navBg;
+        navbar.style.boxShadow = isDark
+            ? '0 2px 20px rgba(0,0,0,0.5)'
+            : '0 2px 20px rgba(0,0,0,0.1)';
     } else {
-        navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+        navbar.style.background = navBgLight;
         navbar.style.boxShadow = 'none';
     }
 });
@@ -172,17 +177,7 @@ window.addEventListener('scroll', () => {
     });
 });
 
-// Add CSS for active nav link
-const style = document.createElement('style');
-style.textContent = `
-    .nav-link.active {
-        color: #1e3a8a !important;
-    }
-    .nav-link.active::after {
-        width: 100% !important;
-    }
-`;
-document.head.appendChild(style);
+// Active nav link — handled by CSS variables in styles.css
 
 document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('theme-toggle');
@@ -222,36 +217,138 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ============================================================
-// Publication filter tabs
+// Publication filter + collapsible lists (show first 5)
 // ============================================================
 (function () {
+    const LIMIT = 5;
+    const TYPES = ['journal', 'conference', 'book'];
+    const pubList   = document.querySelector('.publications-list');
     const filterBtns = document.querySelectorAll('.filter-btn');
-    const pubItems   = document.querySelectorAll('.publication-item');
     const catTitles  = document.querySelectorAll('.pub-category-title');
+    if (!pubList) return;
+
+    const expanded = { journal: false, conference: false, book: false };
+    let activeFilter = 'all';
+
+    function makeCollapseBtn(text, forType) {
+        const btn = document.createElement('button');
+        btn.className = 'collapse-btn';
+        btn.dataset.for = forType;
+        btn.innerHTML = text;
+        return btn;
+    }
+
+    function applyFilter(filter) {
+        activeFilter = filter;
+        TYPES.forEach(t => { expanded[t] = false; });
+
+        document.querySelectorAll('.publication-item').forEach(item => {
+            const match = filter === 'all' || item.dataset.type === filter;
+            item.classList.toggle('pub-type-hidden', !match);
+            item.classList.remove('pub-limit-hidden'); // reset limit on filter change
+        });
+        catTitles.forEach(title => {
+            const match = filter === 'all' || title.dataset.type === filter;
+            title.classList.toggle('pub-type-hidden', !match);
+        });
+    }
+
+    function applyCollapse() {
+        // Remove all existing collapse buttons
+        pubList.querySelectorAll('.collapse-btn').forEach(b => b.remove());
+
+        const typesToProcess = activeFilter === 'all' ? TYPES : [activeFilter];
+
+        typesToProcess.forEach(type => {
+            const items = Array.from(
+                pubList.querySelectorAll(`.publication-item[data-type="${type}"]`)
+            ).filter(item => !item.classList.contains('pub-type-hidden'));
+
+            if (items.length <= LIMIT) {
+                items.forEach(item => item.classList.remove('pub-limit-hidden'));
+                return;
+            }
+
+            items.forEach((item, i) => {
+                item.classList.toggle('pub-limit-hidden', !expanded[type] && i >= LIMIT);
+            });
+
+            const lastVisible = expanded[type] ? items[items.length - 1] : items[LIMIT - 1];
+            const total = items.length;
+            const btn = makeCollapseBtn(
+                expanded[type]
+                    ? '<i class="fas fa-chevron-up"></i> Hide'
+                    : `<i class="fas fa-chevron-down"></i> See all`,
+                type
+            );
+            btn.addEventListener('click', () => {
+                expanded[type] = !expanded[type];
+                applyCollapse();
+                if (!expanded[type]) {
+                    // scroll back to first item of this type
+                    const firstItem = items[0];
+                    const offset = firstItem.getBoundingClientRect().top + window.scrollY - 100;
+                    window.scrollTo({ top: offset, behavior: 'smooth' });
+                }
+            });
+            lastVisible.insertAdjacentElement('afterend', btn);
+        });
+    }
 
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-
-            const filter = btn.dataset.filter;
-
-            pubItems.forEach(item => {
-                if (filter === 'all' || item.dataset.type === filter) {
-                    item.style.display = '';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-
-            catTitles.forEach(title => {
-                const type = title.dataset.type;
-                if (filter === 'all' || type === filter) {
-                    title.style.display = '';
-                } else {
-                    title.style.display = 'none';
-                }
-            });
+            applyFilter(btn.dataset.filter);
+            applyCollapse();
         });
+    });
+
+    // Initial state
+    applyFilter('all');
+    applyCollapse();
+})();
+
+// ============================================================
+// Presentation lists — show first 5 per column
+// ============================================================
+(function () {
+    const LIMIT = 5;
+
+    document.querySelectorAll('.pres-column').forEach(col => {
+        const list  = col.querySelector('.presentation-list');
+        const items = Array.from(col.querySelectorAll('.presentation-item'));
+        if (!list || items.length <= LIMIT) return;
+
+        let expanded = false;
+
+        function applyLimit() {
+            const existingBtn = col.querySelector('.collapse-btn');
+            if (existingBtn) existingBtn.remove();
+
+            items.forEach((item, i) => {
+                item.classList.toggle('pres-limit-hidden', !expanded && i >= LIMIT);
+            });
+
+            const lastVisible = expanded ? items[items.length - 1] : items[LIMIT - 1];
+            const btn = document.createElement('button');
+            btn.className = 'collapse-btn';
+            btn.innerHTML = expanded
+                ? '<i class="fas fa-chevron-up"></i> Hide'
+                : `<i class="fas fa-chevron-down"></i> See all`;
+
+            btn.addEventListener('click', () => {
+                expanded = !expanded;
+                applyLimit();
+                if (!expanded) {
+                    const offset = items[0].getBoundingClientRect().top + window.scrollY - 100;
+                    window.scrollTo({ top: offset, behavior: 'smooth' });
+                }
+            });
+
+            lastVisible.insertAdjacentElement('afterend', btn);
+        }
+
+        applyLimit();
     });
 })();

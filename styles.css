@@ -10,16 +10,19 @@
 
     --icon-color: #0058a3;          /* Okabe-Ito blue, WCAG AA on white */
 
-    --text-main: #111827;           /* Near-black — high contrast */
-    --text-body: #374151;           /* Body text */
-    --text-secondary: #6b7280;      /* Secondary / labels */
+    --text-main: #111827;           /* Near-black — headings, titles (18:1) */
+    --text-body: #1f2937;           /* Primary reading text — authors, descriptions (16:1) */
+    --text-secondary: #4b5563;      /* Labels, captions, meta — WCAG AA 5.9:1 */
     --text-heading: #111827;
-    --text-accent: #0058a3;         /* Okabe-Ito blue (#0072B2 darkened for AA) */
+    --text-nav: #111827;            /* Nav link text in light mode */
+    --text-accent: #0058a3;         /* Okabe-Ito blue — links & accents (5.9:1) */
     --text-tag: #0058a3;
     --border-color: #e2e8f0;
     --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
 
     /* Okabe-Ito institution palette (distinguishable in all colorblindness types) */
+    --stat-icon-bg: #0058a3;
+    --stat-icon-color: #ffffff;
     --clr-uv-bg: #FFF0C0;           /* light amber — UV */
     --clr-uv-text: #7A4800;         /* dark brown */
     --clr-dlr-bg: #CCE5FF;          /* light blue — DLR */
@@ -40,16 +43,19 @@
 
     --icon-color: #60b4ff;       /* Bright blue, colorblind-safe */
 
-    --text-main: #f0f4f8;        /* Near-white */
-    --text-body: #c9d5e0;        /* Body text — slightly off-white */
-    --text-secondary: #8899aa;   /* Muted secondary */
+    --text-main: #f0f4f8;        /* Near-white — headings */
+    --text-body: #d1dce8;        /* Primary reading text on dark (9.5:1) */
+    --text-secondary: #8899aa;   /* Labels, captions */
     --text-heading: #f0f4f8;
-    --text-accent: #60b4ff;      /* Okabe-Ito blue tint — AA on dark bg */
+    --text-nav: #e2eaf2;         /* Nav links on dark bg */
+    --text-accent: #60b4ff;      /* Blue — links & accents */
     --text-tag: #60b4ff;
     --border-color: rgba(60, 80, 110, 0.5);
     --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5);
 
     /* Dark institution badges */
+    --stat-icon-bg: rgba(96, 180, 255, 0.15);
+    --stat-icon-color: #60b4ff;
     --clr-uv-bg: #5C3600;        /* dark amber */
     --clr-uv-text: #FFD470;
     --clr-dlr-bg: #0A2B5C;       /* dark blue */
@@ -301,8 +307,8 @@ body {
 }
 
 .btn-outline {
-    background:  #1e3b8a85;
-    color: #99ace1;
+    background:  #1e3b8a;
+    color: #dadbdd;
     border-color: #1e3a8a;
 }
 
@@ -342,7 +348,7 @@ section {
 
 .section-subtitle {
     font-size: 1.1rem;
-    color: var(--text-secondary);
+    color: var(--text-body);
     max-width: 600px;
     margin: 0 auto;
     line-height: 1.8;
@@ -398,7 +404,7 @@ section {
 .about-paragraph {
     font-size: 1.1rem;
     line-height: 1.8;
-    color: var(--text-secondary);
+    color: var(--text-body);
     margin-bottom: 1.5rem;
 }
 
@@ -483,7 +489,7 @@ section {
   }
 
 .experience-content p {
-    color: var(--text-secondary);
+    color: var(--text-body);
     margin-bottom: 0.3rem;
 }
   
@@ -514,6 +520,38 @@ section {
 }
   
 /* Responsive layout */
+/* ── Collapsible list toggle ───────────────────────────────── */
+.pub-type-hidden,
+.pub-limit-hidden,
+.pres-limit-hidden {
+    display: none !important;
+}
+
+.collapse-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.5rem;
+    margin: 1rem auto 0.5rem;
+    border: 2px solid var(--text-accent);
+    border-radius: 25px;
+    background: transparent;
+    color: var(--text-accent);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: inherit;
+}
+.collapse-btn:hover {
+    background: var(--text-accent);
+    color: #ffffff;
+}
+.collapse-btn i {
+    font-size: 0.8rem;
+}
+
+
 @media (max-width: 768px) {
     .experience-card {
       flex-direction: column;
@@ -575,8 +613,8 @@ section {
 }
 
 .stat-icon {
-    background: #1e3a8a; 
-    color: white;
+    background: var(--stat-icon-bg);
+    color: var(--stat-icon-color);
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -595,7 +633,7 @@ section {
 }
 
 .stat-label {
-    color: #6b7280;
+    color: var(--text-secondary);
     font-weight: 500;
 }
 
@@ -676,7 +714,7 @@ section {
 }
 
 .research-description {
-    color: var(--text-secondary);
+    color: var(--text-body);
     line-height: 1.7;
 }
 
@@ -721,7 +759,7 @@ section {
 }
 
 .publication-journal {
-    color: var(--text-secondary);
+    color: var(--text-body);
     margin-bottom: 1rem;
 }
 
@@ -809,7 +847,7 @@ section {
 }
 
 .project-description {
-    color: var(--text-secondary);
+    color: var(--text-body);
     line-height: 1.7;
     margin-bottom: 1rem;
 }
@@ -858,7 +896,7 @@ section {
 }
 
 .contact-item p {
-    color: var(--text-secondary);
+    color: var(--text-body);
     margin: 0;
 }
 
@@ -883,7 +921,7 @@ section {
 }
 
 .interests-description {
-    color: #6b7280;
+    color: var(--text-secondary);
     line-height: 1.7;
     margin-bottom: 2rem;
 }
@@ -925,7 +963,7 @@ section {
 }
 
 .footer-copyright {
-    color: #6b7280;
+    color: var(--text-secondary);
     font-size: 0.875rem;
 }
 
@@ -1092,6 +1130,16 @@ section {
     margin-top: 2px;
     flex-shrink: 0;
 }
+.achievement a,
+.experience-content a {
+    color: var(--text-accent);
+    text-decoration: none;
+    font-weight: 500;
+}
+.achievement a:hover,
+.experience-content a:hover {
+    text-decoration: underline;
+}
 
 /* --- Experience cards (enhanced) --- */
 .experience-title {
@@ -1148,7 +1196,7 @@ section {
 }
 .experience-content p {
     font-size: 0.9rem;
-    color: var(--text-secondary);
+    color: var(--text-body);
     margin-bottom: 0.4rem;
 }
 .experience-content ul {
@@ -1263,12 +1311,12 @@ section {
 }
 .publication-authors {
     font-size: 0.87rem;
-    color: var(--text-secondary);
+    color: var(--text-body);
     margin-bottom: 0.25rem;
 }
 .publication-journal {
     font-size: 0.87rem;
-    color: var(--text-secondary);
+    color: var(--text-body);
     font-style: italic;
 }
 .publication-status {
@@ -1361,7 +1409,7 @@ section {
 [data-theme="dark"] .project-period.purple { background: #4c1d95; color: #ddd6fe; }
 .project-description {
     font-size: 0.9rem;
-    color: var(--text-secondary);
+    color: var(--text-body);
     margin-bottom: 0.6rem;
     line-height: 1.5;
 }
@@ -1413,7 +1461,7 @@ section {
     border-bottom: 1px solid var(--border-color);
     font-size: 0.875rem;
     line-height: 1.6;
-    color: var(--text-secondary);
+    color: var(--text-body);
 }
 .pres-item:last-child {
     border-bottom: none;
@@ -1474,7 +1522,7 @@ section {
 }
 .supervision-list li {
     font-size: 0.88rem;
-    color: var(--text-secondary);
+    color: var(--text-body);
     padding: 0.6rem 0;
     border-bottom: 1px solid var(--border-color);
     line-height: 1.5;
@@ -1685,7 +1733,7 @@ section {
     color: var(--text-accent);
 }
 .software-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.1rem; }
-.software-subtitle { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.6rem; }
+.software-subtitle { font-size: 0.9rem; color: var(--text-body); margin-bottom: 0.6rem; }
 .software-authors { font-size: 0.88rem; margin-bottom: 0.5rem; }
 .software-desc { font-size: 0.9rem; line-height: 1.65; color: var(--text-body); margin-bottom: 1rem; }
 .software-meta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
