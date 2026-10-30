@@ -22,7 +22,7 @@
 
     /* Okabe-Ito institution palette (distinguishable in all colorblindness types) */
     --stat-icon-bg: #0058a3;
-    --stat-icon-color: #ffffff;
+    --stat-icon-color: #98cdfc;
     --clr-uv-bg: #FFF0C0;           /* light amber — UV */
     --clr-uv-text: #7A4800;         /* dark brown */
     --clr-dlr-bg: #CCE5FF;          /* light blue — DLR */
@@ -1227,11 +1227,13 @@ section {
 .stat-item:hover {
     box-shadow: var(--shadow-card);
 }
+/*
 .stat-icon {
     font-size: 1.8rem;
     color: var(--text-accent);
     margin-bottom: 0.6rem;
 }
+*/
 .stat-number {
     font-size: 2.5rem;
     font-weight: 700;
